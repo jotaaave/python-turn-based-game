@@ -8,5 +8,18 @@ class Player:
         self.power = (randrange(1, 12) * 3)
         self.intelect = (randrange(1, 12) * 1)
 
+    def create(self):
+        return {
+            "name": self.name,
+            "life": self.life,
+            "mana": self.mana,
+            "power": self.power,
+            "intelect": self.intelect,
+            "inventory": [
+
+            ]
+        }
+
 def create_player(name):
-    return Player(name)
+    player = Player(name)
+    return player.create()
