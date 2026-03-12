@@ -1,5 +1,6 @@
 from methods.texteffect import line
 from random import choice, randrange
+from actions import combat_actions
 
 def check_status(Game):
     Game.change_state(2)
@@ -66,6 +67,18 @@ def explore(Game):
         # "alies": []
     }
 
+    combatActions = {
+        1: { # Atacar
+
+        },
+        2: { # Usar item
+
+        },
+        3: { # Fugir
+
+        }
+    }
+
     selectedExploration = choice(list(exploreType.keys()))
     event = exploreType[selectedExploration]
     
@@ -78,21 +91,35 @@ def explore(Game):
             Game.change_state(1)
 
     if (selectedExploration == "monsters"):
-        while Game.check_state() == 2:
-            mob = {
+        player = Game.player
+        actual_action = 0
+        string_actions = [
+                f'[1]. Atacar\n[2]. Usar item\n{'[3]. Fugir\n' if not Game.check_battle_state() else '\n'}',
+                f'[1]. {player['abilities'][0]['ability_name']}\n[2]. {player['abilities'][1]['ability_name']}\n'
+        ]
+
+        mob = {
                 'name': event[0]['name'],
                 'life': event[0]['life'] * randrange(1, 6),
                 'attack': event[0]['attack']
             }
 
+        while Game.check_state() == 2:
             line()
-            print(f"Você foi interceptado por um {event[0]['name']}!\n")
-            print(f'[1]. Atacar\n[2]. Usar item\n{'[3]. Fugir\n' if not Game.check_battle_state() else '\n'}')
-            value = input('Escolha sua ação: ')
+            print(f"Você foi interceptado por um {mob['name']}!\n")
+            print(f'MONSTRO: {mob['name']}\nVIDA: {mob['life']}\n')
 
-            if (value == '1'):
+            print(string_actions[actual_action])
+            value = int(input('Escolha sua ação: '))
+
+            if (value and value > 0 and value <= 4 and Game.check_battle_state()):
+                ability = Game.player["abilities"][value - 1]
+                mob['life'] = combat_actions.combat_attack(ability['damage'], mob)
+
+            if (value == 1):
                 Game.set_battle(True)
+                actual_action = 1
 
-            if (value == '3' and not Game.check_battle_state()):
+            if (value == 3 and not Game.check_battle_state()):
                 Game.change_state(1)
                 mob = None
