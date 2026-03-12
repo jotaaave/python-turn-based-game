@@ -17,6 +17,10 @@ class Game:
     @classmethod
     def change_state(cls, new_state):
         cls.game_state = new_state
+
+    @classmethod
+    def check_state(cls):
+        return cls.game_state
     
     @classmethod
     def setup_player(cls, player):
@@ -49,10 +53,10 @@ allActionsScreenDict = {
     },
     1: { # Player Actions
         1: player_actions.check_status,
-        2: None,
+        2: player_actions.view_inventory,
         3: None,
         4: None,
-        5: None,
+        5: lambda Game: Game.change_state(0),
     },
     2: {
         1: lambda Game: Game.change_state(1)

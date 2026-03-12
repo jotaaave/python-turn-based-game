@@ -17,6 +17,9 @@ class Player:
             "intelect": self.intelect,
             "inventory": [
 
+            ],
+            "magics": [
+                
             ]
         }
 
