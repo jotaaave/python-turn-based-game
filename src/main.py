@@ -5,10 +5,19 @@ class Game:
     on = True
     player = None
     game_state = 0
+    battle_state = False
 
     @classmethod
     def power_off(cls):
         cls.on = False
+
+    @classmethod
+    def check_battle_state(cls):
+        return cls.battle_state
+    
+    @classmethod
+    def set_battle(cls, bool):
+        cls.battle_state = bool
 
     @classmethod
     def check_game(cls):
@@ -54,7 +63,7 @@ allActionsScreenDict = {
     1: { # Player Actions
         1: player_actions.check_status,
         2: player_actions.view_inventory,
-        3: None,
+        3: player_actions.explore,
         4: None,
         5: lambda Game: Game.change_state(0),
     },
@@ -80,12 +89,10 @@ def playerChoiceAction(choice, menuNumber):
 textLine('WELCOME TO THE GAME (YES YOU LOSE)')
 
 while Game.check_game():
-    try:
         if (not Game.check_game()): break
         showMenu(Game.game_state)
         playerChoice = input("\nEscolha sua ação: ")
         playerChoiceAction(playerChoice, Game.game_state)
-    except:
         print('Valor invalido tente novamente!')
         continue
 
