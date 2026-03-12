@@ -1,4 +1,6 @@
 from methods.texteffect import line
+from random import choice, randrange
+from actions import combat_actions
 
 def check_status(Game):
     Game.change_state(2)
@@ -35,3 +37,89 @@ def view_inventory(Game):
         if (int(action) == 1):
             Game.change_state(1)
             break
+
+def explore(Game):
+    Game.change_state(2)
+    # O jogador podera ter algumas coisas quando explorar
+    # Encontrar báu, Encontrar monstro, Encontrar área, Encontrar NPC, Encontrar Aliados
+    # E cada encontro desse é totalmente aleatorio, podendo ser qualquer monstro, npc, area, etc
+    exploreType = {
+        "chests": [
+            {
+                "name": "Báu Comum",
+                "rarity": 1,
+            }
+        ],
+        "monsters": [
+            {
+                "name": "Esqueleto",
+                "life": 10,
+                "attack": [
+                    {
+                        "attack_name": "Flechada",
+                        "damage": 12 # Esse número é para decidir entre 1 e damage para dar dano (1d12)
+                    }
+                ]
+            }
+        ],
+        # "npcs": [],
+        # "locals": [],
+        # "alies": []
+    }
+
+    combatActions = {
+        1: { # Atacar
+
+        },
+        2: { # Usar item
+
+        },
+        3: { # Fugir
+
+        }
+    }
+
+    selectedExploration = choice(list(exploreType.keys()))
+    event = exploreType[selectedExploration]
+    
+    if (selectedExploration == "chests"):
+        while Game.check_state() == 2:
+            line()
+            print(f'Booa! Você encontrou um {event[0]['name']}!')
+            print('\n[1]. Pegar items\n[2]. Descartar\n')
+            value = input('Escolha sua ação: ')
+            Game.change_state(1)
+
+    if (selectedExploration == "monsters"):
+        player = Game.player
+        actual_action = 0
+        string_actions = [
+                f'[1]. Atacar\n[2]. Usar item\n{'[3]. Fugir\n' if not Game.check_battle_state() else '\n'}',
+                f'[1]. {player['abilities'][0]['ability_name']}\n[2]. {player['abilities'][1]['ability_name']}\n'
+        ]
+
+        mob = {
+                'name': event[0]['name'],
+                'life': event[0]['life'] * randrange(1, 6),
+                'attack': event[0]['attack']
+            }
+
+        while Game.check_state() == 2:
+            line()
+            print(f"Você foi interceptado por um {mob['name']}!\n")
+            print(f'MONSTRO: {mob['name']}\nVIDA: {mob['life']}\n')
+
+            print(string_actions[actual_action])
+            value = int(input('Escolha sua ação: '))
+
+            if (value and value > 0 and value <= 4 and Game.check_battle_state()):
+                ability = Game.player["abilities"][value - 1]
+                mob['life'] = combat_actions.combat_attack(ability['damage'], mob)
+
+            if (value == 1):
+                Game.set_battle(True)
+                actual_action = 1
+
+            if (value == 3 and not Game.check_battle_state()):
+                Game.change_state(1)
+                mob = None

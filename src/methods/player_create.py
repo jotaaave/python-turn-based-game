@@ -20,6 +20,18 @@ class Player:
             ],
             "magics": [
                 
+            ],
+            "abilities": [
+                {
+                    "ability_name": "Soco",
+                    "damage": 16,
+                    "level": 1
+                },
+                {
+                    "ability_name": "Chute",
+                    "damage": 12,
+                    "level": 1
+                }
             ]
         }
 
