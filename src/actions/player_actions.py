@@ -114,7 +114,7 @@ def explore(Game):
 
             if (value and value > 0 and value <= 4 and Game.check_battle_state()):
                 ability = Game.player["abilities"][value - 1]
-                mob['life'] = combat_actions.combat_attack(ability['damage'], mob)
+                mob['life'] = combat_actions.combat_attack(ability['damage'], mob, Game)
 
             if (value == 1):
                 Game.set_battle(True)
